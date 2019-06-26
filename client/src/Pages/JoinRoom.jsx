@@ -11,7 +11,11 @@ const useStyles = makeStyles(theme => ({
     root: {
         padding: theme.spacing(3, 2),
         marginTop: "15px"
-    }
+    },
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing(10),
+    },
 }));
 
 export default function JoinRoom() {
@@ -25,36 +29,38 @@ export default function JoinRoom() {
     };
 
     return (
-        <Grid container justify="center">
-            <Grid item xs={12} md={10} lg={8}>
-                <Paper className={classes.root}>
-                    <Grid container spacing={4}>
-                        <Grid item xs={12}>
-                            <Typography variant="h5" component="h3">
-                                Rejoindre une salle
+        <main className={classes.content}>
+            <Grid container justify="center">
+                <Grid item xs={12} md={10} lg={8}>
+                    <Paper className={classes.root}>
+                        <Grid container spacing={4}>
+                            <Grid item xs={12}>
+                                <Typography variant="h5" component="h3">
+                                    Rejoindre une salle
                         </Typography>
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={3}>
-                            <TextField
-                                id="outlined-name"
-                                label="Identifiant de la salle"
-                                className={classes.textField}
-                                value={values.roomID}
-                                onChange={handleChange('roomID')}
-                                margin="normal"
-                                variant="outlined"
-                                fullWidth
-                            />
-                        </Grid>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={3}>
+                                <TextField
+                                    id="outlined-name"
+                                    label="Identifiant de la salle"
+                                    className={classes.textField}
+                                    value={values.roomID}
+                                    onChange={handleChange('roomID')}
+                                    margin="normal"
+                                    variant="outlined"
+                                    fullWidth
+                                />
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <Success variant="contained" color="primary" className={classes.margin}>
-                                Rejoindre la salle
+                            <Grid item xs={12}>
+                                <Success variant="contained" color="primary" className={classes.margin}>
+                                    Rejoindre la salle
                             </Success>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Paper>
+                    </Paper>
+                </Grid>
             </Grid>
-        </Grid>
+        </main>
     );
 }

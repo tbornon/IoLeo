@@ -8,12 +8,14 @@ import Navbar from "./Components/Navbar";
 //import Home from "./Pages/Home";
 import CreateRoom from "./Pages/CreateRoom";
 import JoinRoom from "./Pages/JoinRoom";
+import Room from "./Pages/Room";
 
 ReactDOM.render((
     <Router>
         <Navbar />
         <Route path="/create" exact component={CreateRoom} />
         <Route path="/join" exact component={JoinRoom} />
+        <Route path="/room" exact component={Room} />
     </Router>
 ), document.getElementById('root'));
 

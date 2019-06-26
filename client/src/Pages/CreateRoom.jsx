@@ -35,6 +35,10 @@ const useStyles = makeStyles(theme => ({
     margin: {
         margin: theme.spacing(1),
     },
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing(10),
+    },
 }));
 
 export default function CreateRoom() {
@@ -64,66 +68,68 @@ export default function CreateRoom() {
     }
 
     return (
-        <Grid container justify="center">
-            <Grid item xs={12} md={10} lg={8}>
-                <Paper className={classes.root}>
-                    <Grid container spacing={4}>
-                        <Grid item xs={12}>
-                            <Typography variant="h5" component="h3">
-                                Création de la salle
+        <main className={classes.content}>
+            <Grid container justify="center">
+                <Grid item xs={12} md={10} lg={8}>
+                    <Paper className={classes.root}>
+                        <Grid container spacing={4}>
+                            <Grid item xs={12}>
+                                <Typography variant="h5" component="h3">
+                                    Création de la salle
                         </Typography>
-                        </Grid>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            {values.students.map((student, i) =>
-                                <Grid container spacing={8} alignItems="center" key={i}>
-                                    <Grid item xs={12} md={4}>
-                                        <TextField
-                                            id="outlined-name"
-                                            label="Nom"
-                                            className={classes.textField}
-                                            value={student.firstName}
-                                            onChange={handleChange('firstName', i)}
-                                            margin="normal"
-                                            variant="outlined"
-                                            fullWidth
-                                        />
+                            <Grid item xs={12}>
+                                {values.students.map((student, i) =>
+                                    <Grid container spacing={8} alignItems="center" key={i}>
+                                        <Grid item xs={12} md={4}>
+                                            <TextField
+                                                id="outlined-name"
+                                                label="Nom"
+                                                className={classes.textField}
+                                                value={student.firstName}
+                                                onChange={handleChange('firstName', i)}
+                                                margin="normal"
+                                                variant="outlined"
+                                                fullWidth
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={4}>
+                                            <TextField
+                                                id="outlined-name"
+                                                label="Prénom"
+                                                className={classes.textField}
+                                                value={student.lastName}
+                                                onChange={handleChange('lastName', i)}
+                                                margin="normal"
+                                                variant="outlined"
+                                                fullWidth
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={4}>
+                                            <Danger variant="contained" color="primary" onClick={deleteStudent(i)}>
+                                                Supprimer l'étudiant
+                                            </Danger>
+                                        </Grid>
                                     </Grid>
+                                )}
+                            </Grid>
 
-                                    <Grid item xs={12} md={4}>
-                                        <TextField
-                                            id="outlined-name"
-                                            label="Prénom"
-                                            className={classes.textField}
-                                            value={student.lastName}
-                                            onChange={handleChange('lastName', i)}
-                                            margin="normal"
-                                            variant="outlined"
-                                            fullWidth
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={4}>
-                                        <Danger variant="contained" color="primary" onClick={deleteStudent(i)}>
-                                            Supprimer l'étudiant
-                                    </Danger>
-                                    </Grid>
-                                </Grid>
-                            )}
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Button variant="contained" color="primary" className={classes.margin} onClick={addStudent}>
-                                <PersonAdd className={classes.leftIcon} />
-                                Ajouter un étudiant
+                            <Grid item xs={12}>
+                                <Button variant="contained" color="primary" className={classes.margin} onClick={addStudent}>
+                                    <PersonAdd className={classes.leftIcon} />
+                                    Ajouter un étudiant
                             </Button>
-                            <Success variant="contained" color="primary" className={classes.margin} onClick={addStudent}>
-                                Créer la salle
+                                <Success variant="contained" color="primary" className={classes.margin} onClick={addStudent}>
+                                    Créer la salle
                             </Success>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Paper>
+                    </Paper>
+                </Grid>
             </Grid>
-        </Grid>
+        </main>
     );
 }
