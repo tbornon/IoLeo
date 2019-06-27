@@ -128,11 +128,11 @@ const findRoomById = (req, res, next) => {
 const createVariable = (req, res, next) => {
     const data = {
         id: req.params.id,
-        variable: req.body.variable
+        ...req.body
     }
 
-    if (data.variable && data.variable.name && data.variable.unit) {
-        comboExists(data.variable.name, data.id)
+    if (data.name && data.unit) {
+        comboExists(data.name, data.id)
             .then(exists => {
                 if (exists) {
                     next(new Error("VariableAlreadyExists"));
@@ -142,7 +142,7 @@ const createVariable = (req, res, next) => {
                         .exec((err, room) => {
                             if (err) next(err);
                             else if (room) {
-                                room.variables.push(data.variable);
+                                room.variables.push({ name: data.name, unit: data.unit });
 
                                 room.save((err, savedRoom) => {
                                     if (err) next(err);

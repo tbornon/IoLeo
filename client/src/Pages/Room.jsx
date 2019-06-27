@@ -103,7 +103,7 @@ function Room(props) {
 
     return (
         <div className={classes.root}>
-            <NewVarDialog open={newVar} setOpen={setNewVar} />
+            <NewVarDialog open={newVar} setOpen={setNewVar} roomID={params.id} />
             <NewGraphDialog open={newGraph} setOpen={setNewGraph} />
             <SpeedDial newVar={() => setNewVar(true)} newGraph={() => setNewGraph(true)} />
             <Drawer
