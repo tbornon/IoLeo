@@ -74,6 +74,8 @@ function CreateRoom(props) {
             setValues({
                 students: students
             })
+        } else {
+            props.snackbar.showMessage("error", "La salle doit contenir au minimum un étudiant");
         }
     }
 
