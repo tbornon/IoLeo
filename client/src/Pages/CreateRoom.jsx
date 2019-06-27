@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import PersonAdd from '@material-ui/icons/PersonAdd';
 
 import { Danger, Success } from "../Components/Buttons"
+import { withSnackbar } from "../Components/SnackbarProvider"
 
 import { api } from "../config";
 
@@ -45,7 +46,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function CreateRoom() {
+function CreateRoom(props) {
     const classes = useStyles();
     const [values, setValues] = React.useState({
         students: [{ firstName: "", lastName: "" }]
@@ -102,13 +103,13 @@ export default function CreateRoom() {
                     else return res.json();
                 })
                 .then(res => {
-                    // Notif + redirection
+                    props.snackbar.showMessage("success", "Salle créée avec succès");
                     setRedirection({ redirect: true, roomID: res._id });
                 })
                 .catch(console.error)
         }
         else {
-            // Notification erreur
+            props.snackbar.showMessage("error", "Tous les champs doivent être remplis");
         }
     }
 
@@ -166,13 +167,13 @@ export default function CreateRoom() {
                             </Grid>
 
                             <Grid item xs={12}>
+                                <Success variant="contained" color="primary" className={classes.margin} onClick={createRoom}>
+                                    Créer la salle
+                                </Success>
                                 <Button variant="contained" color="primary" className={classes.margin} onClick={addStudent}>
                                     <PersonAdd className={classes.leftIcon} />
                                     Ajouter un étudiant
-                            </Button>
-                                <Success variant="contained" color="primary" className={classes.margin} onClick={createRoom}>
-                                    Créer la salle
-                            </Success>
+                                </Button>
                             </Grid>
                         </Grid>
                     </Paper>
@@ -181,3 +182,5 @@ export default function CreateRoom() {
         </main>
     );
 }
+
+export default withSnackbar(CreateRoom);
