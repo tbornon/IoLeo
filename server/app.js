@@ -67,7 +67,6 @@ const getRoomList = (req, res, next) => {
 
 const createRoom = (req, res, next) => {
     const data = req.body;
-    console.log(data);
 
     if (data.students && data.students.length > 0) {
         let valid = true;
@@ -77,7 +76,7 @@ const createRoom = (req, res, next) => {
                 break;
             }
         }
-        console.log("est valide : ", valid);
+
         if (valid) {
             findUnusedId()
                 .then(id => {
@@ -121,7 +120,8 @@ const findRoomById = (req, res, next) => {
 
     Room.findById(data.id, (err, room) => {
         if (err) next(err)
-        else res.json(room || {});
+        if (room) res.json(room);
+        else next(new Error("RoomNotFound"));
     });
 }
 
@@ -176,7 +176,7 @@ const createData = (req, res, next) => {
         comboExists(data.variable, data.id)
             .then(exists => {
                 if (exists) {
-                    Room.updateOne({ _id:  data.id },
+                    Room.updateOne({ _id: data.id },
                         {
                             $push: {
                                 datas:
@@ -198,6 +198,17 @@ const createData = (req, res, next) => {
         next(new Error("MissingParameter"));
     }
 }
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+    if (req.method === 'OPTIONS')
+        res.sendStatus(200);
+    else
+        next();
+
+});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

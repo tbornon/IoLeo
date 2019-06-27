@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -18,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function JoinRoom() {
+export default function JoinRoom(props) {
     const classes = useStyles();
     const [values, setValues] = React.useState({
         roomID: ""
@@ -46,14 +47,20 @@ export default function JoinRoom() {
                                     className={classes.textField}
                                     value={values.roomID}
                                     onChange={handleChange('roomID')}
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                            props.history.push(`/room/${e.target.value}`)
+                                        }
+                                    }}
                                     margin="normal"
                                     variant="outlined"
                                     fullWidth
+                                    autoFocus
                                 />
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Success variant="contained" color="primary" className={classes.margin}>
+                                <Success component={Link} to={"/room/" + values.roomID} variant="contained" color="primary" className={classes.margin}>
                                     Rejoindre la salle
                             </Success>
                             </Grid>

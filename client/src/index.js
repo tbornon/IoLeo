@@ -9,14 +9,18 @@ import Navbar from "./Components/Navbar";
 import CreateRoom from "./Pages/CreateRoom";
 import JoinRoom from "./Pages/JoinRoom";
 import Room from "./Pages/Room";
+import SnackbarProvider from "./Components/SnackbarProvider";
+
 
 ReactDOM.render((
-    <Router>
-        <Navbar />
-        <Route path="/create" exact component={CreateRoom} />
-        <Route path="/join" exact component={JoinRoom} />
-        <Route path="/room" exact component={Room} />
-    </Router>
+    <SnackbarProvider>
+        <Router>
+            <Navbar />
+            <Route path="/create" exact component={CreateRoom} />
+            <Route path="/join" exact component={JoinRoom} />
+            <Route path="/room/:id" exact component={Room} />
+        </Router>
+    </SnackbarProvider>
 ), document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

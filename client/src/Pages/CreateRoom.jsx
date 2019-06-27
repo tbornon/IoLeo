@@ -1,4 +1,6 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -9,6 +11,8 @@ import Button from '@material-ui/core/Button';
 import PersonAdd from '@material-ui/icons/PersonAdd';
 
 import { Danger, Success } from "../Components/Buttons"
+
+import { api } from "../config";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -47,6 +51,11 @@ export default function CreateRoom() {
         students: [{ firstName: "", lastName: "" }]
     });
 
+    const [redirection, setRedirection] = React.useState({
+        redirect: false,
+        roomID: 0
+    });
+
     const handleChange = (name, i) => e => {
         let students = [...values.students];
         students[i][name] = e.target.value;
@@ -66,6 +75,45 @@ export default function CreateRoom() {
             })
         }
     }
+
+    const createRoom = () => {
+        let validEntries = true;
+
+        for (let i = 0; i < values.students.length; i++) {
+            if (values.students[i].firstName === "" || values.students[i].lastName === "") {
+                validEntries = false;
+                break;
+            }
+        }
+
+        if (validEntries) {
+            const data = { ...values };
+
+            fetch(api.protocol + "://" + api.hostname + ":" + api.port + "/room", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => {
+                    if (!res.ok) throw res;
+                    else return res.json();
+                })
+                .then(res => {
+                    // Notif + redirection
+                    setRedirection({ redirect: true, roomID: res._id });
+                })
+                .catch(console.error)
+        }
+        else {
+            // Notification erreur
+        }
+    }
+
+    if (redirection.redirect)
+        return <Redirect to={"/room/" + redirection.roomID} />;
 
     return (
         <main className={classes.content}>
@@ -87,8 +135,8 @@ export default function CreateRoom() {
                                                 id="outlined-name"
                                                 label="Nom"
                                                 className={classes.textField}
-                                                value={student.firstName}
-                                                onChange={handleChange('firstName', i)}
+                                                value={student.lastName}
+                                                onChange={handleChange('lastName', i)}
                                                 margin="normal"
                                                 variant="outlined"
                                                 fullWidth
@@ -100,8 +148,8 @@ export default function CreateRoom() {
                                                 id="outlined-name"
                                                 label="Prénom"
                                                 className={classes.textField}
-                                                value={student.lastName}
-                                                onChange={handleChange('lastName', i)}
+                                                value={student.firstName}
+                                                onChange={handleChange('firstName', i)}
                                                 margin="normal"
                                                 variant="outlined"
                                                 fullWidth
@@ -122,7 +170,7 @@ export default function CreateRoom() {
                                     <PersonAdd className={classes.leftIcon} />
                                     Ajouter un étudiant
                             </Button>
-                                <Success variant="contained" color="primary" className={classes.margin} onClick={addStudent}>
+                                <Success variant="contained" color="primary" className={classes.margin} onClick={createRoom}>
                                     Créer la salle
                             </Success>
                             </Grid>
