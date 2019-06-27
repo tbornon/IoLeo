@@ -132,20 +132,68 @@ const createVariable = (req, res, next) => {
     }
 
     if (data.variable && data.variable.name && data.variable.unit) {
-        Room
-            .findById(data.id)
-            .exec((err, room) => {
-                if (err) next(err);
-                else if (room) {
-                    room.variables.push(data.variable);
+        comboExists(data.variable.name, data.id)
+            .then(exists => {
+                if (exists) {
+                    next(new Error("VariableAlreadyExists"));
+                } else {
+                    Room
+                        .findById(data.id)
+                        .exec((err, room) => {
+                            if (err) next(err);
+                            else if (room) {
+                                room.variables.push(data.variable);
 
-                    room.save((err, savedRoom) => {
-                        if (err) next(err);
-                        else res.json(savedRoom);
-                    })
+                                room.save((err, savedRoom) => {
+                                    if (err) next(err);
+                                    else res.json(savedRoom);
+                                })
+                            }
+                            else next(new Error("RoomNotFound"));
+                        });
                 }
-                else next(new Error("RoomNotFound"));
-            });
+            })
+            .catch(next);
+
+    } else {
+        next(new Error("MissingParameter"));
+    }
+}
+
+const comboExists = (name, roomID) => {
+    return new Promise((resolve, reject) => {
+        Room.countDocuments({ _id: roomID, "variables.name": name }, (err, number) => {
+            if (err) reject(err);
+            else resolve(number >= 1);
+        });
+    });
+}
+
+const createData = (req, res, next) => {
+    const data = req.params;
+
+    if (data.variable && data.id && data.value) {
+        comboExists(data.variable, data.id)
+            .then(exists => {
+                if (exists) {
+                    Room.updateOne({ _id:  data.id },
+                        {
+                            $push: {
+                                datas:
+                                {
+                                    value: data.value,
+                                    variable: data.variable
+                                }
+                            }
+                        }, err => {
+                            if (err) next(err);
+                            else res.json({ ok: 1 });
+                        });
+                } else {
+                    next(new Error("RoomOrVariableNotFound"));
+                }
+            })
+            .catch(next);
     } else {
         next(new Error("MissingParameter"));
     }
@@ -168,8 +216,8 @@ app.route('/room/:id')
 app.route('/room/:id/variable')
     .post(createVariable)
 
-app.route('/room/:id/:varible')
-    .post(/* Add new data */);
+app.route('/room/:id/:variable/:value')
+    .post(createData);
 
 
 app.use(function (err, req, res, next) {
