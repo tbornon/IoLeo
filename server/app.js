@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
 
 const roomSchema = new mongoose.Schema({
     _id: Number,
@@ -43,6 +45,19 @@ const roomSchema = new mongoose.Schema({
                 type: Date,
                 default: Date.now()
             }
+        }
+    ],
+    graphs: [
+        {
+            type: {
+                type: String,
+                required: true,
+                default: "line"
+            },
+            variable: {
+                type: String,
+                required: true
+            },
         }
     ]
 });
@@ -176,14 +191,18 @@ const createData = (req, res, next) => {
         comboExists(data.variable, data.id)
             .then(exists => {
                 if (exists) {
+                    let newData = {
+                        value: data.value,
+                        variable: data.variable,
+                        date: Date.now()
+                    }
+
+                    io.sockets.in(data.id).emit('data', newData);
+
                     Room.updateOne({ _id: data.id },
                         {
                             $push: {
-                                datas:
-                                {
-                                    value: data.value,
-                                    variable: data.variable
-                                }
+                                datas: newData
                             }
                         }, err => {
                             if (err) next(err);
@@ -196,6 +215,32 @@ const createData = (req, res, next) => {
             .catch(next);
     } else {
         next(new Error("MissingParameter"));
+    }
+}
+
+const createGraph = (req, res, next) => {
+    const data = {
+        ...req.body,
+        id: req.params.id,
+    }
+
+    console.log("data : ", data)
+
+    if (data.variable) {
+        Room.findById(data.id, (err, room) => {
+            if (err) next(err)
+            else if (room) {
+                let graph = req.body;
+
+                room.graphs.push(graph);
+
+                room.save((err, savedRoom) => {
+                    if (err) next(err)
+                    else res.json(savedRoom);
+                })
+            }
+            else next(new Error("RoomNotFound"));
+        });
     }
 }
 
@@ -225,7 +270,10 @@ app.route('/room/:id')
     .get(findRoomById);
 
 app.route('/room/:id/variable')
-    .post(createVariable)
+    .post(createVariable);
+
+app.route('/room/:id/graph')
+    .post(createGraph);
 
 app.route('/room/:id/:variable/:value')
     .post(createData);
@@ -240,6 +288,14 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.send({ message: err.message, name: err.name });
 });
+
+io.on("connection", socket => {
+    console.log("New client connected")
+    socket.on("disconnect", () => console.log("Client disconnected"));
+    socket.on("room", room => socket.join(room));
+});
+
+http.listen(3002, () => { })
 
 app.listen(3001, () => {
     console.log("Server started listening on port 3001");

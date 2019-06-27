@@ -41,6 +41,7 @@ function NewVarDialog(props) {
                 .then(res => {
                     props.snackbar.showMessage("success", "Variable créée avec succès");
                     setVariable({ name: "", unit: "" });
+                    props.setRoom(res)
                     handleClose();
                 })
                 .catch(err => {

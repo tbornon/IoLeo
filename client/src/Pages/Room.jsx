@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Redirect } from "react-router-dom";
 import { Line } from 'react-chartjs-2';
-
+import socketIOClient from "socket.io-client";
 
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -14,6 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import NewVarDialog from "../Components/NewVarDialog";
 import NewGraphDialog from "../Components/NewGraphDialog";
 import SpeedDial from "../Components/SpeedDial";
+import Chart from "../Components/Chart";
 import { withSnackbar } from "../Components/SnackbarProvider";
 
 import { api } from "../config";
@@ -33,7 +34,9 @@ const useStyles = makeStyles(theme => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing(10),
+        paddingTop: theme.spacing(10),
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
     },
     toolbar: theme.mixins.toolbar,
 }));
@@ -72,9 +75,13 @@ function Room(props) {
     const [room, setRoom] = React.useState({
         students: [{ lastName: "", firstName: "" }],
         variables: [{ name: "", unit: "" }],
-        datas: [{ value: "", variable: "", date: Date.now() }]
+        datas: [{ value: "", variable: "", date: Date.now() }],
+        graphs: []
     });
+    const [newData, setNewData] = React.useState({ date: Date.now(), value: 0, variable: "" })
     const params = props.match.params;
+
+    //const socket = socketIOClient(api.protocol + "://" + api.hostname + ":3002");
 
     useEffect(() => {
         fetch(api.protocol + "://" + api.hostname + ":" + api.port + "/room/" + params.id, {
@@ -98,13 +105,45 @@ function Room(props) {
             })
     }, [params.id, props.snackbar]);
 
+    useEffect(() => {
+        const socket = socketIOClient(api.protocol + "://" + api.hostname + ":3002");
+
+        socket.emit("room", params.id);
+        socket.on("data", data => setNewData(data));
+
+        return () => socket.disconnect()
+    }, [])
+
+    /*useEffect(() => {
+        const interval = setInterval(() => {
+            setNewData({
+                variable: "temp",
+                value: newData.value + 1,
+                date: Date.now()
+            });
+        }, 5000);
+
+        return () => clearInterval(interval);
+    })*/
+
     if (redirect)
         return <Redirect to="/join" />
 
     return (
         <div className={classes.root}>
-            <NewVarDialog open={newVar} setOpen={setNewVar} roomID={params.id} />
-            <NewGraphDialog open={newGraph} setOpen={setNewGraph} />
+            <NewVarDialog
+                open={newVar}
+                setOpen={setNewVar}
+                setRoom={setRoom}
+                roomID={params.id}
+            />
+            <NewGraphDialog
+                open={newGraph}
+                setOpen={setNewGraph}
+                setRoom={setRoom}
+                roomID={params.id}
+                variables={room.variables}
+            />
             <SpeedDial newVar={() => setNewVar(true)} newGraph={() => setNewGraph(true)} />
             <Drawer
                 className={classes.drawer}
@@ -144,9 +183,16 @@ function Room(props) {
                 </List>
             </Drawer>
             <main className={classes.content}>
-                <Grid container>
-                    <Grid item xs={12}>
-
+                <Grid container alignItems="center">
+                    <Grid item xs={12} md={10} lg={6}>
+                        {room.graphs.map(graph =>
+                            <Chart
+                                key={graph._id}
+                                data={room.datas.filter(data => data.variable === graph.variable)}
+                                newData={newData}
+                                variable={{ name: graph.variable }}
+                            />
+                        )}
                     </Grid>
                 </Grid>
             </main>
