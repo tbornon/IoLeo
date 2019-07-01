@@ -64,11 +64,18 @@ const roomSchema = new mongoose.Schema({
 var Room = mongoose.model('Room', roomSchema);
 
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost:27017/MKR", { useNewUrlParser: true })
-    .then(() => {
-        console.log("Connected to database");
-    })
-    .catch(console.error);
+let mongoUrl = "mongodb://localhost:27017/MKR"
+
+var connectWithRetry = function () {
+    return mongoose.connect(mongoUrl, { useNewUrlParser: true }, function (err) {
+        if (err) {
+            console.error('Failed to connect to mongo on startup - retrying in 5 sec', err);
+            setTimeout(connectWithRetry, 5000);
+        }
+    });
+};
+
+connectWithRetry();
 
 const getRoomList = (req, res, next) => {
     Room
