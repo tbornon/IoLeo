@@ -25,6 +25,10 @@ const roomSchema = new mongoose.Schema({
                 type: String,
                 required: true,
             },
+            displayName: {
+                type: String,
+                required: true,
+            },
             unit: {
                 type: String,
                 required: true,
@@ -146,7 +150,7 @@ const createVariable = (req, res, next) => {
         ...req.body
     }
 
-    if (data.name && data.unit) {
+    if (data.name && data.unit && data.displayName) {
         comboExists(data.name, data.id)
             .then(exists => {
                 if (exists) {
@@ -157,7 +161,7 @@ const createVariable = (req, res, next) => {
                         .exec((err, room) => {
                             if (err) next(err);
                             else if (room) {
-                                room.variables.push({ name: data.name, unit: data.unit });
+                                room.variables.push({ ...data });
 
                                 room.save((err, savedRoom) => {
                                     if (err) next(err);

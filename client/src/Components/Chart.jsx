@@ -47,6 +47,7 @@ export default function Chart(props) {
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
+                    label: props.variable.displayName,
                     data: props.data.map(data => ({ y: data.value, x: new Date(data.date) }))
                 }
             ]
@@ -71,6 +72,7 @@ export default function Chart(props) {
 
     const options = {
         title: {
+            display: true,
             text: 'Chart.js Time Scale'
         },
         scales: {
@@ -90,19 +92,21 @@ export default function Chart(props) {
                 ticks: {
                     callback: (value, index, values) => value + props.variable.unit
                 },
-                scaleLabel: {
+                /*scaleLabel: {
                     display: true,
                     labelString: 'value'
-                }
+                }*/
             }]
         },
         legend: {
-            display: false
+            display: true,
+            position: "bottom"
         },
         tooltips: {
+            displayColors: false,
             callbacks: {
-                label: (tooltipItem) => tooltipItem.yLabel,
-                title: () => null
+                label: (tooltipItem) => tooltipItem.yLabel + props.variable.unit,
+                //title: () => null
             }
         }
     }

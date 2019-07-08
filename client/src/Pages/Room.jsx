@@ -184,16 +184,16 @@ function Room(props) {
             </Drawer>
             <main className={classes.content}>
                 <Grid container alignItems="center">
-                    <Grid item xs={12} md={10} lg={6}>
-                        {room.graphs.map(graph =>
+                    {room.graphs.map(graph =>
+                        <Grid item xs={12} md={10} lg={6}>
                             <Chart
                                 key={graph._id}
                                 data={room.datas.filter(data => data.variable === graph.variable)}
                                 newData={newData}
                                 variable={room.variables.filter(v => v.name === graph.variable)[0]}
                             />
-                        )}
-                    </Grid>
+                        </Grid>
+                    )}
                 </Grid>
             </main>
         </div>

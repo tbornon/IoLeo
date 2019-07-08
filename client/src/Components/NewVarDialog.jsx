@@ -12,7 +12,7 @@ import { SuccessSimple, DangerSimple } from "./Buttons";
 import { api } from "../config";
 
 function NewVarDialog(props) {
-    const [variable, setVariable] = React.useState({ name: "", unit: "" })
+    const [variable, setVariable] = React.useState({ name: "", unit: "", displayName:"" })
 
     function handleClose() {
         props.setOpen(false);
@@ -23,7 +23,7 @@ function NewVarDialog(props) {
     }
 
     function createNewVar() {
-        if (variable.name !== "" && variable.unit !== "") {
+        if (variable.name !== "" && variable.unit !== "" && variable.displayName != "") {
             const data = { ...variable };
 
             fetch(api.protocol + "://" + api.hostname + ":" + api.port + "/room/" + props.roomID + "/variable", {
@@ -70,6 +70,16 @@ function NewVarDialog(props) {
                     type="text"
                     value={variable.name}
                     onChange={handleChange("name")}
+                    margin="normal"
+                    fullWidth
+                />
+                <TextField
+                    margin="dense"
+                    id="name"
+                    label="Nom d'affichage de la variable"
+                    type="text"
+                    value={variable.displayName}
+                    onChange={handleChange("displayName")}
                     margin="normal"
                     fullWidth
                 />
