@@ -63,5 +63,6 @@ ip addr add 192.168.1.3/24 dev eth0
 cd /var/www/PlatformMKR/confs
 cp platform.conf /etc/nginx/sites-available
 ln -s /etc/nginx/sites-available/platform.conf /etc/nginx/sites-enabled
+rm /etc/nginx/sites-enabled/default
 service nginx restart
 ```
