@@ -51,14 +51,12 @@ export default function Chart(props) {
                 }
             ]
         });
-        
-        console.log(data.datasets[0].data);
     }, [props.data]
     );
 
     useEffect(() => {
-        console.log(props.newData)
         if (props.newData && props.newData.variable === props.variable.name && props.newData.value) {
+            console.log("new data:", props.newData)
             setData({
                 datasets: [
                     {
@@ -90,7 +88,7 @@ export default function Chart(props) {
             }],
             yAxes: [{
                 ticks: {
-                    callback: (value, index, values) => value + "°C"
+                    callback: (value, index, values) => value + props.variable.unit
                 },
                 scaleLabel: {
                     display: true,
