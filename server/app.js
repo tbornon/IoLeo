@@ -186,7 +186,7 @@ const comboExists = (name, roomID) => {
 
 const createData = (req, res, next) => {
     const data = req.params;
-
+    console.log(data);
     if (data.variable && data.id && data.value) {
         comboExists(data.variable, data.id)
             .then(exists => {
