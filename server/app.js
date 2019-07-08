@@ -9,6 +9,7 @@ var io = require('socket.io')(http);
 const config = require('./config');
 const Room = require('./Models/Room');
 const RoomRoutes = require('./Routes/RoomRoutes');
+const AdminRoutes = require('./Routes/AdminRoutes');
 
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost:27017/MKR", { useNewUrlParser: true })
@@ -47,6 +48,31 @@ app.use(bodyParser.json());
 RoomRoutes(app);
 
 app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.send({ message: err.message, name: err.name });
+});
+
+appAdmin.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+    if (req.method === 'OPTIONS')
+        res.sendStatus(200);
+    else
+        next();
+});
+
+appAdmin.use(bodyParser.urlencoded({ extended: false }));
+appAdmin.use(bodyParser.json());
+
+AdminRoutes(appAdmin);
+
+appAdmin.use(function (err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

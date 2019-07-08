@@ -1,0 +1,7 @@
+{
+    "api": {
+        "hostname": "localhost",
+        "port":  3003,
+        "protocol": "http"
+    }
+}

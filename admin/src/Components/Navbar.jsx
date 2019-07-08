@@ -33,17 +33,11 @@ export default function ButtonAppBar() {
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
-                        Internet of Léo
+                        Internet of Léo - Admin
                     </Typography>
 
                     <Button component={Link} to="/" color="inherit" className={classes.button}>
                         Accueil
-                    </Button>
-                    <Button component={Link} to="/create" color="inherit">
-                        Créer une salle
-                    </Button>
-                    <Button component={Link} to="/join" color="inherit" >
-                        Rejoindre une salle
                     </Button>
                 </Toolbar>
             </AppBar>
