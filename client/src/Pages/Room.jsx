@@ -126,43 +126,45 @@ function Room(props) {
                 deleteVar={() => setRemoveDialog({ open: true, type: "variable" })}
                 deleteGraph={() => setRemoveDialog({ open: true, type: "graph" })}
             />
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-            >
-                <div className={classes.toolbar} />
-                <List>
-                    <ListItem>
-                        <ListItemText primary={"Identifiant de la salle :"} />
-                        <ListItemText primary={params.id} />
-                    </ListItem>
-                </List>
-                <Divider />
-                <List>
-                    <ListItem>
-                        <ListItemText primary={"Etudiants :"} />
-                    </ListItem>
-                    {
-                        room.students.map(student =>
-                            <ListItem key={student._id || Date.now()}>
-                                <ListItemText primary={student.lastName.toUpperCase() + " " + student.firstName} />
-                            </ListItem>
-                        )
-                    }
-                </List>
-                <Divider />
-                <List>
-                    <ListItem>
-                        <ListItemText primary={"Dernier message reçu"} />
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText primary={room.datas.length > 0 ? "le " + (new Date(room.datas[room.datas.length - 1].date)).toLocaleString() : "n/a"} />
-                    </ListItem>
-                </List>
-            </Drawer>
+            { !room.special &&
+                <Drawer
+                    className={classes.drawer}
+                    variant="permanent"
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                >
+                    <div className={classes.toolbar} />
+                    <List>
+                        <ListItem>
+                            <ListItemText primary={"Identifiant de la salle :"} />
+                            <ListItemText primary={params.id} />
+                        </ListItem>
+                    </List>
+                    <Divider />
+                    <List>
+                        <ListItem>
+                            <ListItemText primary={"Etudiants :"} />
+                        </ListItem>
+                        {
+                            room.students.map(student =>
+                                <ListItem key={student._id || Date.now()}>
+                                    <ListItemText primary={student.lastName.toUpperCase() + " " + student.firstName} />
+                                </ListItem>
+                            )
+                        }
+                    </List>
+                    <Divider />
+                    <List>
+                        <ListItem>
+                            <ListItemText primary={"Dernier message reçu"} />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText primary={room.datas.length > 0 ? "le " + (new Date(room.datas[room.datas.length - 1].date)).toLocaleString() : "n/a"} />
+                        </ListItem>
+                    </List>
+                </Drawer>
+            }
             <main className={classes.content}>
                 <Grid container alignItems="center">
                     {room.graphs.map(graph =>

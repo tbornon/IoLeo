@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -23,10 +24,6 @@ const useStyles = makeStyles(theme => ({
         minWidth: 650,
     },
 }));
-
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
 
 export default function SimpleTable() {
     const [state, setState] = useState({ rooms: [] });
@@ -69,8 +66,24 @@ export default function SimpleTable() {
                                     <TableCell align="right">{room._id}</TableCell>
                                     <TableCell align="right">{room.students.map(s => s.lastName.toUpperCase() + " " + s.firstName).join(",")}</TableCell>
                                     <TableCell align="right">
-                                        <Button component="a" target="_blank" href={"http://localhost:3000/room/" + room._id} variant="contained" color="primary" className="primary">Rejoindre la salle</Button>
-                                        <Warning variant="contained" style={{ marginLeft: "10px" }} color="primary" >Modifier</Warning>
+                                        <Button
+                                            component="a"
+                                            target="_blank"
+                                            href={"http://localhost:3000/room/" + room._id}
+                                            variant="contained" color="primary"
+                                            className="primary"
+                                        >
+                                            Rejoindre la salle
+                                          </Button>
+                                        <Warning
+                                            component={Link}
+                                            to={"/edit/" + room._id}
+                                            variant="contained"
+                                            style={{ marginLeft: "10px" }}
+                                            color="primary"
+                                        >
+                                            Modifier
+                                        </Warning>
                                         <Danger variant="contained" style={{ marginLeft: "10px" }} color="primary" >Supprimer</Danger>
                                     </TableCell>
                                 </TableRow>

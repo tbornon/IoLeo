@@ -1,4 +1,4 @@
-const AdminController = require('../Controllers/AdminController');
+const RoomController = require('../Controllers/RoomController');
 
 module.exports = app => {
     app.get("/", (req, res, next) => {
@@ -6,7 +6,10 @@ module.exports = app => {
     });
 
     app.route('/room')
-        .get(AdminController.getRoomList)
-        .put(AdminController.editRoom)
-        .delete(AdminController.deleteRoom);
+        .get(RoomController.getRoomList)
+        .put(RoomController.editRoom)
+        .delete(RoomController.deleteRoom);
+
+    app.route('/room/:id')
+        .get(RoomController.findRoomById);
 }

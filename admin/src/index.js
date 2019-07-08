@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 import Navbar from "./Components/Navbar";
 import Home from "./Pages/Home";
+import EditRoom from "./Pages/EditRoom";
 import SnackbarProvider from "./Components/SnackbarProvider";
 
 
@@ -14,6 +15,7 @@ ReactDOM.render((
         <Router>
             <Navbar />
             <Route path="/" exact component={Home} />
+            <Route path="/edit/:id" component={EditRoom} />
         </Router>
     </SnackbarProvider>
 ), document.getElementById('root'));

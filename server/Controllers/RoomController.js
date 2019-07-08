@@ -1,6 +1,19 @@
 const mongoose = require('mongoose');
 const Room = mongoose.model('Room');
 
+exports.getRoomList = (req, res, next) => {
+    Room
+        .find({})
+        .select("students _id")
+        .exec((err, rooms) => {
+            if (err)
+                next(err);
+            else if (rooms)
+                res.json(rooms)
+        });
+}
+
+
 exports.createRoom = (req, res, next) => {
     const data = req.body;
     console.log(data)
@@ -44,6 +57,49 @@ exports.findRoomById = (req, res, next) => {
         if (room) res.json(room);
         else next(new Error("RoomNotFound"));
     });
+}
+
+exports.editRoom = (req, res, next) => {
+    const data = req.body;
+
+    if (data._id) {
+        Room.findById(data._id, (err, room) => {
+            if (err) next(err);
+            else if (room) {
+                let roomToUpdate = room;
+                if (data.newId) {
+                    roomToUpdate = new Room({
+                        ...room,
+                        _id: data.newId
+                    });
+
+                    Room.findByIdAndDelete(room._id, err => { if (err) next(err); });
+                }
+
+                if (data.students) roomToUpdate.students = data.students;
+                if (data.newId) roomToUpdate._id = data.newId;
+                if (data.special) roomToUpdate.special = data.special;
+
+                roomToUpdate.save((err, savedRoom) => {
+                    if (err) next(err);
+                    else res.json(savedRoom);
+                });
+            } else {
+                next(new Error("RoomNotFound"));
+            }
+        })
+    }
+}
+
+exports.deleteRoom = (req, res, next) => {
+    if (req.body._id) {
+        Room.deleteOne({ _id: req.body._id }, err => {
+            if (err) next(err);
+            else res.json({ ok: 1 });
+        });
+    } else {
+        next(new Error("Missing parameter _id"));
+    }
 }
 
 exports.createVariable = (req, res, next) => {

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const roomSchema = new mongoose.Schema({
-    _id: Number,
+    _id: String,
     students: [
         {
             firstName: {
@@ -67,7 +67,12 @@ const roomSchema = new mongoose.Schema({
                 default: 6
             }
         }
-    ]
+    ],
+    special: {
+        type: Boolean,
+        required: true,
+        default: false
+    }
 });
 
 var Room = mongoose.model('Room', roomSchema);
