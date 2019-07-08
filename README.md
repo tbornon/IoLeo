@@ -32,7 +32,7 @@ apt-get install git -y
 ```
 
 # Configuration
-En tant que root
+**En tant que root**
 ## Téléchargement du programme
 ```
 cd /var/www
