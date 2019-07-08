@@ -53,6 +53,10 @@ const roomSchema = new mongoose.Schema({
     ],
     graphs: [
         {
+            title: {
+                required: true,
+                type: String
+            },
             type: {
                 type: String,
                 required: true,
@@ -62,6 +66,11 @@ const roomSchema = new mongoose.Schema({
                 type: String,
                 required: true
             },
+            width: {
+                type: Number,
+                required: true,
+                default: 6
+            }
         }
     ]
 });
@@ -228,9 +237,7 @@ const createGraph = (req, res, next) => {
         id: req.params.id,
     }
 
-    console.log("data : ", data)
-
-    if (data.variable) {
+    if (data.variable && data.title) {
         Room.findById(data.id, (err, room) => {
             if (err) next(err)
             else if (room) {

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Redirect } from "react-router-dom";
-import { Line } from 'react-chartjs-2';
 import socketIOClient from "socket.io-client";
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -40,32 +39,6 @@ const useStyles = makeStyles(theme => ({
     },
     toolbar: theme.mixins.toolbar,
 }));
-/*
-const data = {
-    labels: Object.keys(rawData).map(key => new Date(key).toLocaleString()),
-    datasets: [
-        {
-            label: 'My First dataset',
-            fill: true,
-            lineTension: 0.5,
-            borderColor: 'rgba(75,192,192,1)',
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: 'rgba(75,192,192,1)',
-            pointBackgroundColor: '#fff',
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-            pointHoverBorderColor: 'rgba(220,220,220,1)',
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
-            data: Object.keys(rawData).map(key => Math.round(rawData[key].temperature.sol) / 10)
-        }
-    ]
-};*/
 
 function Room(props) {
     const classes = useStyles();
@@ -112,19 +85,7 @@ function Room(props) {
         socket.on("data", data => setNewData(data));
 
         return () => socket.disconnect()
-    }, [])
-
-    /*useEffect(() => {
-        const interval = setInterval(() => {
-            setNewData({
-                variable: "temp",
-                value: newData.value + 1,
-                date: Date.now()
-            });
-        }, 5000);
-
-        return () => clearInterval(interval);
-    })*/
+    }, [params.id])
 
     if (redirect)
         return <Redirect to="/join" />
@@ -185,12 +146,12 @@ function Room(props) {
             <main className={classes.content}>
                 <Grid container alignItems="center">
                     {room.graphs.map(graph =>
-                        <Grid item xs={12} md={10} lg={6}>
+                        <Grid item xs={graph.width} key={graph._id}>
                             <Chart
-                                key={graph._id}
                                 data={room.datas.filter(data => data.variable === graph.variable)}
                                 newData={newData}
                                 variable={room.variables.filter(v => v.name === graph.variable)[0]}
+                                title={graph.title}
                             />
                         </Grid>
                     )}

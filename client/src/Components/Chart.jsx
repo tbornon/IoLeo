@@ -25,7 +25,6 @@ export default function Chart(props) {
             }
         ]
     });
-    let reference;
 
     useEffect(() => {
         setData({
@@ -52,7 +51,7 @@ export default function Chart(props) {
                 }
             ]
         });
-    }, [props.data]
+    }, [props.data, props.variable]
     );
 
     useEffect(() => {
@@ -66,14 +65,14 @@ export default function Chart(props) {
                     }
                 ]
             });
-        }
-    }, [props.newData]
+        }// eslint-disable-next-line
+    }, [props.newData, props.variable]
     );
 
     const options = {
         title: {
             display: true,
-            text: 'Chart.js Time Scale'
+            text: props.title
         },
         scales: {
             xAxes: [{
@@ -82,20 +81,12 @@ export default function Chart(props) {
                     // round: 'day'
                     tooltipFormat: 'HH:mm'
                 },
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Date'
-                },
                 distribution: 'linear'
             }],
             yAxes: [{
                 ticks: {
                     callback: (value, index, values) => value + props.variable.unit
                 },
-                /*scaleLabel: {
-                    display: true,
-                    labelString: 'value'
-                }*/
             }]
         },
         legend: {
@@ -112,6 +103,6 @@ export default function Chart(props) {
     }
 
     return (
-        <Line data={data} options={options} ref={ref => reference = ref} />
+        <Line data={data} options={options} />
     )
 }

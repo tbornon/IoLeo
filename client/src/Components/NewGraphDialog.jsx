@@ -10,6 +10,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
 
 import { SuccessSimple, DangerSimple } from "./Buttons";
 import { withSnackbar } from "./SnackbarProvider";
@@ -32,47 +33,49 @@ const useStyles = makeStyles(theme => ({
 
 function NewGraphDialog(props) {
     const classes = useStyles();
-    const [values, setValues] = React.useState({ variable: "" });
+    const [values, setValues] = React.useState({ variable: "", title: "",width: 6 });
 
     function handleClose() {
         props.setOpen(false);
     }
-    function handleChange(event) {
-        setValues(oldValues => ({
-            ...oldValues,
-            [event.target.name]: event.target.value,
-        }));
+
+    const handleChange = name => e => {
+        setValues({ ...values, [name]: e.target.value });
     }
 
     function addGraph() {
-        const data = {
-            variable: values.variable
-        }
+        if (values.name !== "" && values.title !== "") {
+            const data = {
+                ...values
+            }
 
-        fetch(api.protocol + "://" + api.hostname + ":" + api.port + "/room/" + props.roomID + "/graph", {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => {
-                if (!res.ok) throw res;
-                else return res.json();
+            fetch(api.protocol + "://" + api.hostname + ":" + api.port + "/room/" + props.roomID + "/graph", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
             })
-            .then(res => {
-                props.snackbar.showMessage("success", "Graph créée avec succès");
-                setValues({ variable: "" });
-                props.setRoom(res);
-                handleClose();
-            })
-            .catch(err => {
-                console.error(err);
-                err.json().then(msg => {
+                .then(res => {
+                    if (!res.ok) throw res;
+                    else return res.json();
+                })
+                .then(res => {
+                    props.snackbar.showMessage("success", "Graph créée avec succès");
+                    setValues({ variable: "" });
+                    props.setRoom(res);
+                    handleClose();
+                })
+                .catch(err => {
                     console.error(err);
+                    err.json().then(msg => {
+                        console.error(err);
+                    });
                 });
-            });
+        } else {
+            props.snackbar.showMessage("error", "Tous les champs doivent être remplis");
+        }
     }
 
     return (
@@ -82,15 +85,21 @@ function NewGraphDialog(props) {
                 <DialogContentText>
                     Associer une variable à un nouveau graphique
                 </DialogContentText>
+
+                <TextField
+                    margin="dense"
+                    label="Nom du graphique"
+                    type="text"
+                    value={values.title}
+                    onChange={handleChange("title")}
+                    fullWidth
+                />
+
                 <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="variable">Nom de la variable</InputLabel>
                     <Select
                         value={values.variable}
-                        onChange={handleChange}
-                        inputProps={{
-                            name: 'variable',
-                            id: 'variable'
-                        }}
+                        onChange={handleChange("variable")}
                     >
                         {props.variables.map(variable =>
                             <MenuItem
@@ -102,6 +111,16 @@ function NewGraphDialog(props) {
                         )}
                     </Select>
                 </FormControl>
+
+                <TextField
+                    margin="dense"
+                    label="Largeur du graphique (entre 1 et 12)"
+                    type="text"
+                    value={values.width}
+                    onChange={handleChange("width")}
+                    fullWidth
+                />
+
             </DialogContent>
             <DialogActions>
                 <DangerSimple onClick={handleClose} color="primary">
