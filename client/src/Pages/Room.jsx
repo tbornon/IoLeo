@@ -190,7 +190,7 @@ function Room(props) {
                                 key={graph._id}
                                 data={room.datas.filter(data => data.variable === graph.variable)}
                                 newData={newData}
-                                variable={{ name: graph.variable }}
+                                variable={room.variables.filter(v => v.name === graph.variable)[0]}
                             />
                         )}
                     </Grid>
