@@ -188,13 +188,89 @@ const createVariable = (req, res, next) => {
     }
 }
 
-const comboExists = (name, roomID) => {
-    return new Promise((resolve, reject) => {
-        Room.countDocuments({ _id: roomID, "variables.name": name }, (err, number) => {
-            if (err) reject(err);
-            else resolve(number >= 1);
+const removeVariable = (req, res, next) => {
+    const data = {
+        roomID: req.params.id,
+        ...req.body
+    }
+
+    if (data.variableID) {
+        Room.findById(data.roomID, (err, room) => {
+            if (err) next(err);
+            else if (room) {
+                let variable;
+                for (let i = 0; i < room.variables.length; i++) {
+                    if (data.variableID == room.variables[i]._id) {
+                        variable = room.variables[i];
+                        break;
+                    }
+                }
+
+                if (variable) {
+                    room.datas = room.datas.filter(data => data.variable != variable.name);
+
+                    room.variables = room.variables.filter(variable => variable._id != data.variableID);
+
+                    room.save((err, savedRoom) => {
+                        if (err) next(err);
+                        else res.json(savedRoom);
+                    })
+                } else {
+                    next(new Error("VariableNotFound"));
+                }
+            } else {
+                next(new Error("RoomNotFound"));
+            }
         });
-    });
+    } else {
+        next(new Error("MissingID"));
+    }
+}
+
+const createGraph = (req, res, next) => {
+    const data = {
+        ...req.body,
+        id: req.params.id,
+    }
+
+    if (data.variable && data.title) {
+        Room.findById(data.id, (err, room) => {
+            if (err) next(err)
+            else if (room) {
+                let graph = req.body;
+
+                room.graphs.push(graph);
+
+                room.save((err, savedRoom) => {
+                    if (err) next(err)
+                    else res.json(savedRoom);
+                })
+            }
+            else next(new Error("RoomNotFound"));
+        });
+    }
+}
+
+const removeGraph = (req, res, next) => {
+    const data = { ...req.body, roomID: req.params.id };
+
+    if (data.graphID) {
+        Room.findById(data.roomID, (err, room) => {
+            if (err) next(err)
+            else if (room) {
+                room.graphs = room.graphs.filter(graph => graph._id != data.graphID);
+
+                room.save((err, savedRoom) => {
+                    if (err) next(err);
+                    else res.json(savedRoom);
+                })
+            } else {
+                next(new Error("RoomNotFound"));
+            }
+        });
+    } else {
+        next(new Error("MissingID"));
+    }
 }
 
 const createData = (req, res, next) => {
@@ -231,28 +307,13 @@ const createData = (req, res, next) => {
     }
 }
 
-const createGraph = (req, res, next) => {
-    const data = {
-        ...req.body,
-        id: req.params.id,
-    }
-
-    if (data.variable && data.title) {
-        Room.findById(data.id, (err, room) => {
-            if (err) next(err)
-            else if (room) {
-                let graph = req.body;
-
-                room.graphs.push(graph);
-
-                room.save((err, savedRoom) => {
-                    if (err) next(err)
-                    else res.json(savedRoom);
-                })
-            }
-            else next(new Error("RoomNotFound"));
+const comboExists = (name, roomID) => {
+    return new Promise((resolve, reject) => {
+        Room.countDocuments({ _id: roomID, "variables.name": name }, (err, number) => {
+            if (err) reject(err);
+            else resolve(number >= 1);
         });
-    }
+    });
 }
 
 app.use((req, res, next) => {
@@ -281,10 +342,12 @@ app.route('/room/:id')
     .get(findRoomById);
 
 app.route('/room/:id/variable')
-    .post(createVariable);
+    .post(createVariable)
+    .delete(removeVariable);
 
 app.route('/room/:id/graph')
-    .post(createGraph);
+    .post(createGraph)
+    .delete(removeGraph);
 
 app.route('/room/:id/:variable/:value')
     .post(createData);

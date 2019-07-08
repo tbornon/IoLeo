@@ -10,6 +10,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 
+import DeleteDialog from "../Components/DeleteDialog";
 import NewVarDialog from "../Components/NewVarDialog";
 import NewGraphDialog from "../Components/NewGraphDialog";
 import SpeedDial from "../Components/SpeedDial";
@@ -42,16 +43,21 @@ const useStyles = makeStyles(theme => ({
 
 function Room(props) {
     const classes = useStyles();
+
     const [newVar, setNewVar] = React.useState(false);
     const [newGraph, setNewGraph] = React.useState(false);
+    const [removeDialog, setRemoveDialog] = React.useState({ open: false, type: "variable" });
+
     const [redirect, setRedirect] = React.useState(false);
+
     const [room, setRoom] = React.useState({
         students: [{ lastName: "", firstName: "" }],
-        variables: [{ name: "", unit: "" }],
+        variables: [{ name: "", unit: "", _id: "" }],
         datas: [{ value: "", variable: "", date: Date.now() }],
         graphs: []
     });
     const [newData, setNewData] = React.useState({ date: Date.now(), value: 0, variable: "" })
+
     const params = props.match.params;
 
     //const socket = socketIOClient(api.protocol + "://" + api.hostname + ":3002");
@@ -105,7 +111,21 @@ function Room(props) {
                 roomID={params.id}
                 variables={room.variables}
             />
-            <SpeedDial newVar={() => setNewVar(true)} newGraph={() => setNewGraph(true)} />
+            <DeleteDialog
+                open={removeDialog.open}
+                type={removeDialog.type}
+                setOpen={setRemoveDialog}
+                setRoom={setRoom}
+                roomID={params.id}
+                variables={room.variables}
+                graphs={room.graphs}
+            />
+            <SpeedDial
+                newVar={() => setNewVar(true)}
+                newGraph={() => setNewGraph(true)}
+                deleteVar={() => setRemoveDialog({ open: true, type: "variable" })}
+                deleteGraph={() => setRemoveDialog({ open: true, type: "graph" })}
+            />
             <Drawer
                 className={classes.drawer}
                 variant="permanent"

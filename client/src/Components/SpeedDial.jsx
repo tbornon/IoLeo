@@ -4,6 +4,7 @@ import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import Add from '@material-ui/icons/Add';
+import Delete from '@material-ui/icons/Delete';
 
 const styles = theme => ({
     root: {
@@ -33,6 +34,8 @@ class SpeedDials extends React.Component {
     };
 
     actions = [
+        { icon: <Delete />, name: 'Supprimer un graphique', action: this.props.deleteGraph },
+        { icon: <Delete />, name: 'Supprimer une variable', action: this.props.deleteVar },
         { icon: <Add />, name: 'Ajouter une variable', action: this.props.newVar },
         { icon: <Add />, name: 'Ajouter un graphique', action: this.props.newGraph },
     ];
