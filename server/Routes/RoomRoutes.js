@@ -6,7 +6,6 @@ module.exports = app => {
     });
 
     app.route('/room')
-        .get(RoomController.getRoomList)
         .post(RoomController.createRoom);
 
     app.route('/room/:id')

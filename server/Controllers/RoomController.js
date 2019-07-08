@@ -1,16 +1,6 @@
 const mongoose = require('mongoose');
 const Room = mongoose.model('Room');
 
-exports.getRoomList = (req, res, next) => {
-    Room
-        .find({})
-        .select("_id students variables")
-        .exec((err, rooms) => {
-            if (err) next(err);
-            else res.json(rooms || {});
-        });
-}
-
 exports.createRoom = (req, res, next) => {
     const data = req.body;
     console.log(data)
