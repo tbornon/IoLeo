@@ -7,11 +7,14 @@ Les outils qui doivent être installés sur la machine sont :
 3. Nginx
 4. Git
 
+Si le déploiement est fait sur RPi, utiliser l'image ARM64 [disponible ici](https://wiki.ubuntu.com/ARM/RaspberryPi)
+
 # Installation
 
 ## MongoDB
 
 [Procédure d'installation sur le site de mongo](https://docs.mongodb.com/v3.2/administration/install-on-linux/)
+[Pour installation sur un Rapsberry Pi](https://andyfelong.com/2019/03/mongodb-4-0-6-64-bit-on-raspberry-pi-3/)
 
 ## NodeJS
 
