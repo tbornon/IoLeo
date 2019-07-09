@@ -1,6 +1,6 @@
 const RoomController = require('../Controllers/RoomController');
 
-module.exports = app => {
+module.exports = (app,io) => {
     app.get("/", (req, res, next) => {
         res.json({ ok: 1, message: "API is up and running" });
     });
@@ -20,6 +20,6 @@ module.exports = app => {
         .delete(RoomController.removeGraph);
 
     app.route('/room/:id/:variable/:value')
-        .post(RoomController.createData);
+        .post(RoomController.createData(io));
 
 }

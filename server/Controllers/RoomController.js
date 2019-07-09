@@ -222,37 +222,39 @@ exports.removeGraph = (req, res, next) => {
     }
 }
 
-exports.createData = (req, res, next) => {
-    const data = req.params;
-    console.log(data);
-    if (data.variable && data.id && data.value) {
-        comboExists(data.variable, data.id)
-            .then(exists => {
-                if (exists) {
-                    let newData = {
-                        value: data.value,
-                        variable: data.variable,
-                        date: Date.now()
+exports.createData = io => {
+    return (req, res, next) => {
+        const data = req.params;
+        console.log(data);
+        if (data.variable && data.id && data.value) {
+            comboExists(data.variable, data.id)
+                .then(exists => {
+                    if (exists) {
+                        let newData = {
+                            value: data.value,
+                            variable: data.variable,
+                            date: Date.now()
+                        }
+
+                        io.sockets.in(data.id).emit('data', newData);
+
+                        Room.updateOne({ _id: data.id },
+                            {
+                                $push: {
+                                    datas: newData
+                                }
+                            }, err => {
+                                if (err) next(err);
+                                else res.json({ ok: 1 });
+                            });
+                    } else {
+                        next(new Error("RoomOrVariableNotFound"));
                     }
-
-                    io.sockets.in(data.id).emit('data', newData);
-
-                    Room.updateOne({ _id: data.id },
-                        {
-                            $push: {
-                                datas: newData
-                            }
-                        }, err => {
-                            if (err) next(err);
-                            else res.json({ ok: 1 });
-                        });
-                } else {
-                    next(new Error("RoomOrVariableNotFound"));
-                }
-            })
-            .catch(next);
-    } else {
-        next(new Error("MissingParameter"));
+                })
+                .catch(next);
+        } else {
+            next(new Error("MissingParameter"));
+        }
     }
 }
 
