@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-RoomRoutes(app);
+RoomRoutes(app, io);
 
 app.use(function (err, req, res, next) {
     // set locals, only providing error in development
