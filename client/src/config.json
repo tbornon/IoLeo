@@ -3,5 +3,10 @@
         "hostname": "localhost",
         "port":  3001,
         "protocol": "http"
+    },
+    "socket": {
+        "hostname": "localhost",
+        "port":  3002,
+        "protocol": "http"
     }
 }
