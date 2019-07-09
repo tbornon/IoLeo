@@ -17,7 +17,7 @@ import SpeedDial from "../Components/SpeedDial";
 import Chart from "../Components/Chart";
 import { withSnackbar } from "../Components/SnackbarProvider";
 
-import { api } from "../config";
+import { api, socket } from "../config";
 
 const drawerWidth = 240;
 
@@ -85,7 +85,7 @@ function Room(props) {
     }, [params.id, props.snackbar]);
 
     useEffect(() => {
-        const socket = socketIOClient(api.protocol + "://" + api.hostname + ":3002");
+        const socket = socketIOClient(socket.protocol + "://" + socket.hostname + ":" + socket.port);
 
         socket.emit("room", params.id);
         socket.on("data", data => setNewData(data));
