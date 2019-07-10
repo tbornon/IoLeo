@@ -69,15 +69,17 @@ exports.editRoom = (req, res, next) => {
                 let roomToUpdate = room;
                 if (data.newId) {
                     roomToUpdate = new Room({
-                        ...room,
+                        students: room.students,
+                        graphs: room.graphs,
+                        datas: room.datas,
+                        special: room.special,
                         _id: data.newId
                     });
 
                     Room.findByIdAndDelete(room._id, err => { if (err) next(err); });
                 }
 
-                if (data.students) roomToUpdate.students = data.students;
-                if (data.newId) roomToUpdate._id = data.newId;
+                if (data.students !== undefined) roomToUpdate.students = data.students;
                 if (data.special !== undefined) roomToUpdate.special = data.special;
 
                 roomToUpdate.save((err, savedRoom) => {
