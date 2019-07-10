@@ -78,7 +78,7 @@ exports.editRoom = (req, res, next) => {
 
                 if (data.students) roomToUpdate.students = data.students;
                 if (data.newId) roomToUpdate._id = data.newId;
-                if (data.special) roomToUpdate.special = data.special;
+                if (data.special !== undefined) roomToUpdate.special = data.special;
 
                 roomToUpdate.save((err, savedRoom) => {
                     if (err) next(err);
