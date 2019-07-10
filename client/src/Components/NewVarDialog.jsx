@@ -60,7 +60,7 @@ function NewVarDialog(props) {
             <DialogTitle id="form-dialog-title">Créer une nouvelle variable</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Cette nouvelle variable vous permettra d'envoyer d'autres types de données depuis votre Arduino MKR.
+                    Cette nouvelle variable vous permettra d'envoyer d'autres types de données depuis votre ESP8266.
                     <br />Il est recommandé de ne pas mettre d'accent ou de caractères spéciaux dans le nom de la variable.
                 </DialogContentText>
                 <TextField
