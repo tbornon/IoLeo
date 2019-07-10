@@ -73,6 +73,7 @@ exports.editRoom = (req, res, next) => {
                         graphs: room.graphs,
                         datas: room.datas,
                         special: room.special,
+                        variables: room.variables,
                         _id: data.newId
                     });
 
