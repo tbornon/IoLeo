@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button'
 
 import { Warning, Danger } from "../Components/Buttons"
 
-import { api } from "../config";
+import { api, client } from "../config";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -69,7 +69,7 @@ export default function SimpleTable() {
                                         <Button
                                             component="a"
                                             target="_blank"
-                                            href={"http://localhost:3000/room/" + room._id}
+                                            href={client.protocol + "://" + client.hostname + ":" + client.port + "/room/" + room._id}
                                             variant="contained" color="primary"
                                             className="primary"
                                         >
