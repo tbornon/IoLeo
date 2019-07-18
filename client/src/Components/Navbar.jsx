@@ -7,21 +7,22 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles(theme => ({
-        root: {
-            flexGrow: 1,
-        },
-        menuButton: {
-            marginRight: theme.spacing(2),
-        },
-        title: {
-            flexGrow: 1,
-        },
-        appBar: {
-            zIndex: theme.zIndex.drawer + 1,
-        },
-    })
+    root: {
+        flexGrow: 1,
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+    },
+    title: {
+        flexGrow: 1,
+    },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+    },
+})
 );
 
 export default function ButtonAppBar() {
@@ -45,6 +46,9 @@ export default function ButtonAppBar() {
                     <Button component={Link} to="/join" color="inherit" >
                         Rejoindre une salle
                     </Button>
+                    <Tooltip title="Créé par Théophile BORNON pour le Pole universitaire Léonard de Vinci" placement="bottom">
+                        <Button color="inherit">A propos</Button>
+                    </Tooltip>
                 </Toolbar>
             </AppBar>
         </div>
