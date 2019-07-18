@@ -1,6 +1,6 @@
 {
     "api": {
-        "hostname": "api.ioleo.fr",
+        "hostname": "api.admin.ioleo.fr",
         "port":  443,
         "protocol": "https"
     },

@@ -6,7 +6,7 @@
     },
     "socket": {
         "hostname": "socket.ioleo.fr",
-        "port":  3000,
-        "protocol": "http"
+        "port":  443,
+        "protocol": "https"
     }
 }
