@@ -78,7 +78,7 @@ export default function Chart(props) {
                 type: 'time',
                 time: {
                     // round: 'day'
-                    tooltipFormat: 'L HH:mm'
+                    tooltipFormat: 'DD/MM/YY HH:mm'
                 },
                 distribution: 'linear'
             }],
