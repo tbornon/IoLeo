@@ -56,7 +56,6 @@ export default function Chart(props) {
 
     useEffect(() => {
         if (props.newData && props.newData.variable === props.variable.name && props.newData.value) {
-            console.log("new data:", props.newData)
             setData({
                 datasets: [
                     {
@@ -79,7 +78,7 @@ export default function Chart(props) {
                 type: 'time',
                 time: {
                     // round: 'day'
-                    tooltipFormat: 'HH:mm'
+                    tooltipFormat: 'L HH:mm'
                 },
                 distribution: 'linear'
             }],
